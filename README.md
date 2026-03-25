@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WorkLog Payment Dashboard
+
+A frontend admin interface for reviewing freelancer time logs and processing payments. Built with Next.js 16, React 19, TypeScript, and TailwindCSS 4.
+
+## Features
+
+- View all worklogs with calculated total earnings per task
+- Drill down into individual time entries for any worklog
+- Filter worklogs by date range to identify work eligible for a payment cycle
+- Select multiple worklogs and create a payment batch
+- Exclude specific worklogs or freelancers from a batch before confirming
+- All data is served from local mock data — no backend required
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **UI**: React 19 + TailwindCSS 4
+- **Language**: TypeScript 5 (strict mode)
+- **Testing**: Vitest + React Testing Library
+- **Linting**: ESLint 9
+- **Formatting**: Prettier
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script | Description |
+|---|---|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm test` | Run tests (single pass) |
+| `npm run lint` | Run ESLint |
+| `npm run format` | Format all files with Prettier |
+| `npm run format:check` | Check formatting without writing |
 
-## Learn More
+## Running Tests
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npx vitest --run
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/
+  page.tsx              # Main dashboard page (root route)
+  layout.tsx            # Root layout
+  globals.css           # Global styles + TailwindCSS
 
-## Deploy on Vercel
+components/
+  WorklogList.tsx        # Filterable list of worklogs with selection
+  TimeEntryDetails.tsx   # Drill-down view for a single worklog
+  PaymentBatchReview.tsx # Batch review with exclusion controls
+  DateRangeFilter.tsx    # Reusable date range input
+  __tests__/             # Component unit tests
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+lib/
+  types.ts              # TypeScript interfaces
+  mock-data.ts          # Mock freelancers, worklogs, and time entries
+  data-utils.ts         # Data transformation utilities
+  __tests__/            # Utility unit tests
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Workflow
+
+1. **Worklog List** — browse all worklogs, filter by date range, select worklogs for payment
+2. **Time Entry Details** — click any worklog row to inspect individual time entries
+3. **Payment Batch Review** — click "Create Payment Batch" to review selected worklogs, exclude items, and confirm payment
