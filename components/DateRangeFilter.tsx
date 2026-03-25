@@ -30,7 +30,7 @@ export default function DateRangeFilter({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         <label className="flex items-center gap-2 text-sm text-gray-700">
           From
           <input

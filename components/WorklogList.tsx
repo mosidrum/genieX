@@ -1,7 +1,7 @@
 'use client'
 
 import type { Worklog, Freelancer, TimeEntry, DateFilter } from '@/lib/types'
-import { calculateWorklogSummary, filterWorklogsByDateRange } from '@/lib/data-utils'
+import { calculateWorklogSummary } from '@/lib/data-utils'
 import DateRangeFilter from '@/components/DateRangeFilter'
 
 interface WorklogListProps {
@@ -10,6 +10,7 @@ interface WorklogListProps {
   timeEntries: Map<string, TimeEntry[]>
   dateFilter: DateFilter
   selectedIds: Set<string>
+  excludedIds: Set<string>
   onDateFilterChange: (filter: DateFilter) => void
   onWorklogSelect: (id: string) => void
   onWorklogClick: (id: string) => void
@@ -21,12 +22,11 @@ export default function WorklogList({
   timeEntries,
   dateFilter,
   selectedIds,
+  excludedIds,
   onDateFilterChange,
   onWorklogSelect,
   onWorklogClick,
 }: WorklogListProps) {
-  const filtered = filterWorklogsByDateRange(worklogs, timeEntries, dateFilter)
-
   const hasFilter = dateFilter.startDate !== null || dateFilter.endDate !== null
 
   function handleClear() {
@@ -42,9 +42,9 @@ export default function WorklogList({
         onClear={handleClear}
       />
 
-      {worklogs.length === 0 ? (
+      {worklogs.length === 0 && !hasFilter ? (
         <p className="py-8 text-center text-gray-500">No worklogs available.</p>
-      ) : filtered.length === 0 ? (
+      ) : worklogs.length === 0 ? (
         <p className="py-8 text-center text-gray-500">
           No worklogs found for the selected date range.
         </p>
@@ -65,7 +65,7 @@ export default function WorklogList({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 bg-white">
-              {filtered.map((worklog) => {
+              {worklogs.map((worklog) => {
                 const freelancer = freelancers.get(worklog.freelancerId) ?? {
                   id: worklog.freelancerId,
                   name: 'Unknown Freelancer',
@@ -74,11 +74,12 @@ export default function WorklogList({
                 const entries = timeEntries.get(worklog.id) ?? []
                 const summary = calculateWorklogSummary(worklog, freelancer, entries)
                 const isSelected = selectedIds.has(worklog.id)
+                const isExcluded = excludedIds.has(worklog.id)
 
                 return (
                   <tr
                     key={worklog.id}
-                    className={`cursor-pointer transition-colors hover:bg-blue-50 ${isSelected ? 'bg-blue-50' : ''}`}
+                    className={`cursor-pointer transition-colors hover:bg-blue-50 ${isSelected ? 'bg-blue-50' : ''} ${isExcluded ? 'opacity-40' : ''}`}
                     onClick={() => onWorklogClick(worklog.id)}
                   >
                     <td
@@ -111,12 +112,6 @@ export default function WorklogList({
             </tbody>
           </table>
         </div>
-      )}
-
-      {hasFilter && filtered.length > 0 && (
-        <p className="text-xs text-gray-400">
-          Showing {filtered.length} of {worklogs.length} worklogs
-        </p>
       )}
     </div>
   )

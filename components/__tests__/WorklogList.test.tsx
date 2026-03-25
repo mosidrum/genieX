@@ -41,6 +41,7 @@ function setup(overrides: Partial<React.ComponentProps<typeof WorklogList>> = {}
       timeEntries={buildTimeEntries({ 'w-1': entries1, 'w-2': entries2 })}
       dateFilter={noFilter}
       selectedIds={new Set()}
+      excludedIds={new Set()}
       onDateFilterChange={onDateFilterChange}
       onWorklogSelect={onWorklogSelect}
       onWorklogClick={onWorklogClick}
@@ -174,8 +175,11 @@ describe('WorklogList empty states', () => {
   })
 
   it('shows "No worklogs found for the selected date range" when filter matches nothing', () => {
-    // entries are in Dec 2025; filter to a range with no entries
+    // Filtering is done by the parent; simulate by passing empty worklogs with an active filter
     setup({
+      worklogs: [],
+      freelancers: buildFreelancers(),
+      timeEntries: buildTimeEntries({}),
       dateFilter: { startDate: '2030-01-01', endDate: '2030-01-31' },
     })
     expect(screen.getByText(/no worklogs found for the selected date range/i)).toBeInTheDocument()
@@ -183,6 +187,9 @@ describe('WorklogList empty states', () => {
 
   it('does not render the table when filter matches nothing', () => {
     setup({
+      worklogs: [],
+      freelancers: buildFreelancers(),
+      timeEntries: buildTimeEntries({}),
       dateFilter: { startDate: '2030-01-01', endDate: '2030-01-31' },
     })
     expect(screen.queryByRole('table')).not.toBeInTheDocument()
