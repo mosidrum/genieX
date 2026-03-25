@@ -1,19 +1,19 @@
-'use client'
+'use client';
 
-import type { Worklog, Freelancer, TimeEntry, DateFilter } from '@/lib/types'
-import { calculateWorklogSummary } from '@/lib/data-utils'
-import DateRangeFilter from '@/components/DateRangeFilter'
+import type { Worklog, Freelancer, TimeEntry, DateFilter } from '@/lib/types';
+import { calculateWorklogSummary } from '@/lib/data-utils';
+import DateRangeFilter from '@/components/DateRangeFilter';
 
 interface WorklogListProps {
-  worklogs: Worklog[]
-  freelancers: Map<string, Freelancer>
-  timeEntries: Map<string, TimeEntry[]>
-  dateFilter: DateFilter
-  selectedIds: Set<string>
-  excludedIds: Set<string>
-  onDateFilterChange: (filter: DateFilter) => void
-  onWorklogSelect: (id: string) => void
-  onWorklogClick: (id: string) => void
+  worklogs: Worklog[];
+  freelancers: Map<string, Freelancer>;
+  timeEntries: Map<string, TimeEntry[]>;
+  dateFilter: DateFilter;
+  selectedIds: Set<string>;
+  excludedIds: Set<string>;
+  onDateFilterChange: (filter: DateFilter) => void;
+  onWorklogSelect: (id: string) => void;
+  onWorklogClick: (id: string) => void;
 }
 
 export default function WorklogList({
@@ -27,10 +27,10 @@ export default function WorklogList({
   onWorklogSelect,
   onWorklogClick,
 }: WorklogListProps) {
-  const hasFilter = dateFilter.startDate !== null || dateFilter.endDate !== null
+  const hasFilter = dateFilter.startDate !== null || dateFilter.endDate !== null;
 
   function handleClear() {
-    onDateFilterChange({ startDate: null, endDate: null })
+    onDateFilterChange({ startDate: null, endDate: null });
   }
 
   return (
@@ -70,11 +70,11 @@ export default function WorklogList({
                   id: worklog.freelancerId,
                   name: 'Unknown Freelancer',
                   hourlyRate: 0,
-                }
-                const entries = timeEntries.get(worklog.id) ?? []
-                const summary = calculateWorklogSummary(worklog, freelancer, entries)
-                const isSelected = selectedIds.has(worklog.id)
-                const isExcluded = excludedIds.has(worklog.id)
+                };
+                const entries = timeEntries.get(worklog.id) ?? [];
+                const summary = calculateWorklogSummary(worklog, freelancer, entries);
+                const isSelected = selectedIds.has(worklog.id);
+                const isExcluded = excludedIds.has(worklog.id);
 
                 return (
                   <tr
@@ -82,10 +82,7 @@ export default function WorklogList({
                     className={`cursor-pointer transition-colors hover:bg-blue-50 ${isSelected ? 'bg-blue-50' : ''} ${isExcluded ? 'opacity-40' : ''}`}
                     onClick={() => onWorklogClick(worklog.id)}
                   >
-                    <td
-                      className="px-4 py-3"
-                      onClick={(e) => e.stopPropagation()}
-                    >
+                    <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                       <input
                         type="checkbox"
                         checked={isSelected}
@@ -107,27 +104,27 @@ export default function WorklogList({
                       ${summary.totalEarnings.toFixed(2)}
                     </td>
                   </tr>
-                )
+                );
               })}
             </tbody>
           </table>
         </div>
       )}
     </div>
-  )
+  );
 }
 
 const STATUS_STYLES: Record<Worklog['status'], string> = {
   pending: 'bg-yellow-100 text-yellow-800',
   in_progress: 'bg-blue-100 text-blue-800',
   completed: 'bg-green-100 text-green-800',
-}
+};
 
 const STATUS_LABELS: Record<Worklog['status'], string> = {
   pending: 'Pending',
   in_progress: 'In Progress',
   completed: 'Completed',
-}
+};
 
 function StatusBadge({ status }: { status: Worklog['status'] }) {
   return (
@@ -136,5 +133,5 @@ function StatusBadge({ status }: { status: Worklog['status'] }) {
     >
       {STATUS_LABELS[status]}
     </span>
-  )
+  );
 }

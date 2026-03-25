@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import { DateFilter } from '@/lib/types'
+import { DateFilter } from '@/lib/types';
 
 interface DateRangeFilterProps {
-  startDate: string | null
-  endDate: string | null
-  onChange: (filter: DateFilter) => void
-  onClear: () => void
+  startDate: string | null;
+  endDate: string | null;
+  onChange: (filter: DateFilter) => void;
+  onClear: () => void;
 }
 
 export default function DateRangeFilter({
@@ -18,14 +18,14 @@ export default function DateRangeFilter({
   const validationError =
     startDate && endDate && startDate > endDate
       ? 'Start date must be before or equal to end date'
-      : null
+      : null;
 
   function handleStartChange(e: React.ChangeEvent<HTMLInputElement>) {
-    onChange({ startDate: e.target.value || null, endDate })
+    onChange({ startDate: e.target.value || null, endDate });
   }
 
   function handleEndChange(e: React.ChangeEvent<HTMLInputElement>) {
-    onChange({ startDate, endDate: e.target.value || null })
+    onChange({ startDate, endDate: e.target.value || null });
   }
 
   return (
@@ -65,5 +65,5 @@ export default function DateRangeFilter({
         </p>
       )}
     </div>
-  )
+  );
 }

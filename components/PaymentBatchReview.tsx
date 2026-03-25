@@ -1,19 +1,19 @@
-'use client'
+'use client';
 
-import type { Worklog, Freelancer, TimeEntry } from '@/lib/types'
-import { buildPaymentBatch } from '@/lib/data-utils'
+import type { Worklog, Freelancer, TimeEntry } from '@/lib/types';
+import { buildPaymentBatch } from '@/lib/data-utils';
 
 interface PaymentBatchReviewProps {
-  selectedWorklogs: Worklog[]
-  freelancers: Map<string, Freelancer>
-  timeEntries: Map<string, TimeEntry[]>
-  excludedWorklogIds: Set<string>
-  excludedFreelancerIds: Set<string>
-  onExcludeWorklog: (id: string) => void
-  onExcludeFreelancer: (id: string) => void
-  onIncludeWorklog: (id: string) => void
-  onIncludeFreelancer: (id: string) => void
-  onConfirm: () => void
+  selectedWorklogs: Worklog[];
+  freelancers: Map<string, Freelancer>;
+  timeEntries: Map<string, TimeEntry[]>;
+  excludedWorklogIds: Set<string>;
+  excludedFreelancerIds: Set<string>;
+  onExcludeWorklog: (id: string) => void;
+  onExcludeFreelancer: (id: string) => void;
+  onIncludeWorklog: (id: string) => void;
+  onIncludeFreelancer: (id: string) => void;
+  onConfirm: () => void;
 }
 
 export default function PaymentBatchReview({
@@ -34,52 +34,50 @@ export default function PaymentBatchReview({
     timeEntries,
     excludedWorklogIds,
     excludedFreelancerIds
-  )
+  );
 
   // Group worklogs by freelancer for display
-  const freelancerGroups = new Map<string, typeof batch.worklogs>()
+  const freelancerGroups = new Map<string, typeof batch.worklogs>();
   for (const summary of batch.worklogs) {
-    const fid = summary.freelancer.id
-    if (!freelancerGroups.has(fid)) freelancerGroups.set(fid, [])
-    freelancerGroups.get(fid)!.push(summary)
+    const fid = summary.freelancer.id;
+    if (!freelancerGroups.has(fid)) freelancerGroups.set(fid, []);
+    freelancerGroups.get(fid)!.push(summary);
   }
 
   // Also collect excluded worklogs for display
   const excludedSummaries = selectedWorklogs
-    .filter(
-      (w) => excludedWorklogIds.has(w.id) || excludedFreelancerIds.has(w.freelancerId)
-    )
+    .filter((w) => excludedWorklogIds.has(w.id) || excludedFreelancerIds.has(w.freelancerId))
     .map((worklog) => {
       const freelancer = freelancers.get(worklog.freelancerId) ?? {
         id: worklog.freelancerId,
         name: 'Unknown Freelancer',
         hourlyRate: 0,
-      }
-      const entries = timeEntries.get(worklog.id) ?? []
-      const totalHours = entries.reduce((s, e) => s + e.hoursWorked, 0)
+      };
+      const entries = timeEntries.get(worklog.id) ?? [];
+      const totalHours = entries.reduce((s, e) => s + e.hoursWorked, 0);
       return {
         worklog,
         freelancer,
         totalHours,
         totalEarnings: totalHours * freelancer.hourlyRate,
         entryCount: entries.length,
-      }
-    })
+      };
+    });
 
   // Group excluded by freelancer
-  const excludedByFreelancer = new Map<string, typeof excludedSummaries>()
+  const excludedByFreelancer = new Map<string, typeof excludedSummaries>();
   for (const s of excludedSummaries) {
-    const fid = s.freelancer.id
-    if (!excludedByFreelancer.has(fid)) excludedByFreelancer.set(fid, [])
-    excludedByFreelancer.get(fid)!.push(s)
+    const fid = s.freelancer.id;
+    if (!excludedByFreelancer.has(fid)) excludedByFreelancer.set(fid, []);
+    excludedByFreelancer.get(fid)!.push(s);
   }
 
   const allFreelancerIds = new Set([
     ...Array.from(freelancerGroups.keys()),
     ...Array.from(excludedByFreelancer.keys()),
-  ])
+  ]);
 
-  const hasIncluded = batch.worklogCount > 0
+  const hasIncluded = batch.worklogCount > 0;
 
   return (
     <div className="flex flex-col gap-6">
@@ -97,15 +95,15 @@ export default function PaymentBatchReview({
       {/* Worklogs grouped by freelancer */}
       <div className="flex flex-col gap-4">
         {Array.from(allFreelancerIds).map((freelancerId) => {
-          const included = freelancerGroups.get(freelancerId) ?? []
-          const excluded = excludedByFreelancer.get(freelancerId) ?? []
-          const allSummaries = [...included, ...excluded]
+          const included = freelancerGroups.get(freelancerId) ?? [];
+          const excluded = excludedByFreelancer.get(freelancerId) ?? [];
+          const allSummaries = [...included, ...excluded];
           const freelancer = allSummaries[0]?.freelancer ?? {
             id: freelancerId,
             name: 'Unknown Freelancer',
             hourlyRate: 0,
-          }
-          const isFreelancerExcluded = excludedFreelancerIds.has(freelancerId)
+          };
+          const isFreelancerExcluded = excludedFreelancerIds.has(freelancerId);
 
           return (
             <div
@@ -115,7 +113,9 @@ export default function PaymentBatchReview({
               {/* Freelancer header */}
               <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
                 <div className="flex items-center gap-2">
-                  <span className={`font-medium ${isFreelancerExcluded ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
+                  <span
+                    className={`font-medium ${isFreelancerExcluded ? 'text-gray-400 line-through' : 'text-gray-900'}`}
+                  >
                     {freelancer.name}
                   </span>
                   <span className="text-xs text-gray-400">${freelancer.hourlyRate}/hr</span>
@@ -146,7 +146,7 @@ export default function PaymentBatchReview({
               <ul className="divide-y divide-gray-50">
                 {allSummaries.map(({ worklog, totalHours, totalEarnings, entryCount }) => {
                   const isWorklogExcluded =
-                    isFreelancerExcluded || excludedWorklogIds.has(worklog.id)
+                    isFreelancerExcluded || excludedWorklogIds.has(worklog.id);
 
                   return (
                     <li
@@ -160,7 +160,8 @@ export default function PaymentBatchReview({
                           {worklog.taskName}
                         </span>
                         <span className="text-xs text-gray-400">
-                          {entryCount} {entryCount === 1 ? 'entry' : 'entries'} · {totalHours.toFixed(1)}h
+                          {entryCount} {entryCount === 1 ? 'entry' : 'entries'} ·{' '}
+                          {totalHours.toFixed(1)}h
                         </span>
                         {excludedWorklogIds.has(worklog.id) && !isFreelancerExcluded && (
                           <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-600">
@@ -174,8 +175,8 @@ export default function PaymentBatchReview({
                         >
                           ${totalEarnings.toFixed(2)}
                         </span>
-                        {!isFreelancerExcluded && (
-                          excludedWorklogIds.has(worklog.id) ? (
+                        {!isFreelancerExcluded &&
+                          (excludedWorklogIds.has(worklog.id) ? (
                             <button
                               onClick={() => onIncludeWorklog(worklog.id)}
                               className="text-xs text-blue-600 hover:text-blue-800"
@@ -189,15 +190,14 @@ export default function PaymentBatchReview({
                             >
                               Exclude
                             </button>
-                          )
-                        )}
+                          ))}
                       </div>
                     </li>
-                  )
+                  );
                 })}
               </ul>
             </div>
-          )
+          );
         })}
       </div>
 
@@ -212,7 +212,7 @@ export default function PaymentBatchReview({
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 function SummaryCard({
@@ -220,9 +220,9 @@ function SummaryCard({
   value,
   highlight = false,
 }: {
-  label: string
-  value: string
-  highlight?: boolean
+  label: string;
+  value: string;
+  highlight?: boolean;
 }) {
   return (
     <div className="rounded-md bg-gray-50 p-3">
@@ -231,5 +231,5 @@ function SummaryCard({
         {value}
       </p>
     </div>
-  )
+  );
 }

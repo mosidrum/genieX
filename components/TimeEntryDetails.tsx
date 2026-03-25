@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import type { Worklog, Freelancer, TimeEntry } from '@/lib/types'
+import type { Worklog, Freelancer, TimeEntry } from '@/lib/types';
 
 interface TimeEntryDetailsProps {
-  worklog: Worklog
-  freelancer: Freelancer
-  timeEntries: TimeEntry[]
-  onBack: () => void
+  worklog: Worklog;
+  freelancer: Freelancer;
+  timeEntries: TimeEntry[];
+  onBack: () => void;
 }
 
 export default function TimeEntryDetails({
@@ -15,8 +15,8 @@ export default function TimeEntryDetails({
   timeEntries,
   onBack,
 }: TimeEntryDetailsProps) {
-  const totalHours = timeEntries.reduce((sum, e) => sum + e.hoursWorked, 0)
-  const totalEarnings = totalHours * freelancer.hourlyRate
+  const totalHours = timeEntries.reduce((sum, e) => sum + e.hoursWorked, 0);
+  const totalEarnings = totalHours * freelancer.hourlyRate;
 
   return (
     <div className="flex flex-col gap-6">
@@ -64,7 +64,7 @@ export default function TimeEntryDetails({
             </thead>
             <tbody className="divide-y divide-gray-100 bg-white">
               {timeEntries.map((entry) => {
-                const earnings = entry.hoursWorked * freelancer.hourlyRate
+                const earnings = entry.hoursWorked * freelancer.hourlyRate;
                 return (
                   <tr key={entry.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-gray-900">{entry.date}</td>
@@ -78,7 +78,7 @@ export default function TimeEntryDetails({
                       ${earnings.toFixed(2)}
                     </td>
                   </tr>
-                )
+                );
               })}
             </tbody>
             <tfoot className="border-t border-gray-200 bg-gray-50">
@@ -97,5 +97,5 @@ export default function TimeEntryDetails({
         </div>
       )}
     </div>
-  )
+  );
 }
